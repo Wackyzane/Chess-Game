@@ -1,5 +1,4 @@
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess Game.csproj.AssemblyReference.cache
-C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess_Game.Form1.resources
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess_Game.Properties.Resources.resources
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess Game.csproj.GenerateResource.cache
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess Game.csproj.CoreCompileInputs.cache
@@ -8,3 +7,4 @@ C:\Users\karls\source\repos\Chess Game\Chess Game\bin\Debug\Chess Game.exe
 C:\Users\karls\source\repos\Chess Game\Chess Game\bin\Debug\Chess Game.pdb
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess Game.exe
 C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess Game.pdb
+C:\Users\karls\source\repos\Chess Game\Chess Game\obj\Debug\Chess_Game.BackgroundWindow.resources

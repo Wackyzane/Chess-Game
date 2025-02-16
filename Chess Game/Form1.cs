@@ -11,17 +11,12 @@ using System.Windows.Forms;
 
 namespace Chess_Game
 {
-    public partial class Form1 : Form
+    public partial class BackgroundWindow : Form
     {
-        public Form1()
+        public BackgroundWindow()
         {
             InitializeComponent();
             Board.CreateBoard(this);
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
