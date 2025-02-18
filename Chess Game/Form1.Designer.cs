@@ -48,10 +48,7 @@
             this.ColumnLabelH = new System.Windows.Forms.Label();
             this.BlackDeadBox = new System.Windows.Forms.GroupBox();
             this.WhiteDeadBox = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ChessBoard)).BeginInit();
-            this.WhiteDeadBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // ChessBoard
@@ -63,7 +60,6 @@
             this.ChessBoard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ChessBoard.TabIndex = 0;
             this.ChessBoard.TabStop = false;
-            this.ChessBoard.Visible = false;
             // 
             // RowLabel8
             // 
@@ -252,23 +248,12 @@
             // 
             // WhiteDeadBox
             // 
-            this.WhiteDeadBox.Controls.Add(this.pictureBox1);
             this.WhiteDeadBox.Location = new System.Drawing.Point(657, 146);
             this.WhiteDeadBox.Name = "WhiteDeadBox";
             this.WhiteDeadBox.Size = new System.Drawing.Size(131, 100);
             this.WhiteDeadBox.TabIndex = 19;
             this.WhiteDeadBox.TabStop = false;
             this.WhiteDeadBox.Text = "White";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Chess_Game.Properties.Resources.PawnW;
-            this.pictureBox1.Location = new System.Drawing.Point(6, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(27, 26);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 20;
-            this.pictureBox1.TabStop = false;
             // 
             // BackgroundWindow
             // 
@@ -298,8 +283,6 @@
             this.Name = "BackgroundWindow";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.ChessBoard)).EndInit();
-            this.WhiteDeadBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,7 +309,6 @@
         private System.Windows.Forms.Label ColumnLabelH;
         private System.Windows.Forms.GroupBox BlackDeadBox;
         private System.Windows.Forms.GroupBox WhiteDeadBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

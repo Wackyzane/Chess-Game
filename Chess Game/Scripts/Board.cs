@@ -25,40 +25,89 @@ namespace Chess_Game.Scripts
 
     internal static class Board
     {
-        
-        private static int[,] grid = new int[8,8];
+        private static PictureBox ChessBoard;
+        private static PictureBox[,] tiles = new PictureBox[8,8];
+        private static string[,] startingPosition = new string[8, 8]
+        {
+            { "RookB", "KnightB", "BishopB", "QueenB", "KingB", "BishopB", "KnightB", "RookB" },
+            { "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
+            { "", "", "", "", "", "", "", "" },
+            { "", "", "", "", "", "", "", "" },
+            { "", "", "", "", "", "", "", "" },
+            { "", "", "", "", "", "", "", "" },
+            { "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW" },
+            { "RookW", "KnightW", "BishopW", "QueenW", "KingW", "BishopW", "KnightW", "RookW" }
+        };
+
+        public static void Initialize(PictureBox board)
+        {
+            ChessBoard = board;
+        }
 
         public static void CreateBoard(Form form)
         {
-            string imagePath = Directory.GetParent(Application.StartupPath).Parent.FullName;
-            imagePath = Path.Combine(imagePath, "Assets", "PawnW.png");
-            for (int row = 0; row < grid.GetLength(0); row++)
+            for (int row = 0; row < 8; row++)
             {
-                for (int col = 0; col < grid.GetLength(1); col++)
+                for (int col = 0; col < 8; col++)
                 {
-                    PictureBox chessPiece = new PictureBox();
+                    PictureBox tile = new PictureBox
+                    {
+                        Size = new Size(54, 54),
+                        Location = new Point(ChessBoard.Left + col * 53, ChessBoard.Top + row * 53),
+                        BackColor = Color.FromArgb(0, Color.LightGreen),
+                        BorderStyle = BorderStyle.None, // Debugging grid (optional)
+                        Parent = ChessBoard
+                    };
 
-                    chessPiece.Size = new Size(56, 56);
-                    chessPiece.Location = new Point(226, 15);
-                    chessPiece.SizeMode = PictureBoxSizeMode.StretchImage;
-                    chessPiece.Name = Convert.ToChar('A' + col).ToString() + (row + 1);
-                    chessPiece.Image = Image.FromFile(imagePath);
+                    tiles[row, col] = tile;
+                    form.Controls.Add(tile);
+                    tile.BringToFront();
+                    tile.Click += (sender, e) =>
+                    {
+                        HighlightMoves(sender, e);
+                    };
+                }
+            }
 
-                    form.Controls.Add(chessPiece);
+            InitialBoardConfiguration();
+        }
+
+        public static void InitialBoardConfiguration()
+        {
+            string basePath = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    string piece = startingPosition[row, col];
+                    string imagePath = $"Assets\\{piece}.png";
+                    imagePath = Path.Combine(basePath, imagePath);
+                    System.Diagnostics.Debug.WriteLine($"File Path: {imagePath}");
+
+                    if (File.Exists(imagePath))
+                    {
+                        tiles[row, col].Image = Image.FromFile(imagePath);
+                        tiles[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
+                    }
                 }
             }
         }
 
-        public static void ResetBoard()
+        public static void HighlightMoves(object sender, EventArgs e)
         {
-            Array.Clear(grid, 0, grid.Length);
+            Control ctrl = (Control)sender;
 
-            for (int column = 0; column < grid.GetLength(1); column++)
+            for (int row = 0; row < 8; row++)
             {
-                grid[1, column] = 0;
-                grid[7, column] = 0;
+                for (int col = 0; col < 8; col++)
+                {
+                    tiles[row, col].BackColor = Color.FromArgb(0, Color.LightGreen);
+                    if (ReferenceEquals(sender, tiles[row, col]))
+                        tiles[row, col].BackColor = Color.FromArgb(150, Color.LightGreen);
+                }
             }
+            
+            ctrl.BackColor = Color.FromArgb(150, Color.LightGreen);
         }
-
     }
 }
