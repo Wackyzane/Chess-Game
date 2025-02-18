@@ -7,27 +7,27 @@ namespace Chess_Game.Scripts
 {
     internal static class Bishop
     {
-        public static bool BishopPossibleMoves()
+        public static bool BishopPossibleMoves(Point start, Point end)
         {
-            if (Math.Abs(Board.tileSelected.X - Board.oldTileSelected.X) != Math.Abs(Board.tileSelected.Y - Board.oldTileSelected.Y))
+            if (Math.Abs(end.X - start.X) != Math.Abs(end.Y - start.Y))
                 return false; // Is Diagonal Movement
 
-            if (PieceInWayOfMovement())
+            if (PieceInWayOfMovement(start, end))
                 return false; // No Piece in-between start and end point
 
             return true;
         }
 
-        private static bool PieceInWayOfMovement()
+        private static bool PieceInWayOfMovement(Point start, Point end)
         {
-            int rowDirection = Math.Sign(Board.tileSelected.X - Board.oldTileSelected.X); // -1 (up), 1 (down)
-            int colDirection = Math.Sign(Board.tileSelected.Y - Board.oldTileSelected.Y); // -1 (left), 1 (right)
+            int rowDirection = Math.Sign(end.X - start.X); // -1 (up), 1 (down)
+            int colDirection = Math.Sign(end.Y - start.Y); // -1 (left), 1 (right)
 
-            int row = Board.oldTileSelected.X + rowDirection;
-            int col = Board.oldTileSelected.Y + colDirection;
+            int row = start.X + rowDirection;
+            int col = start.Y + colDirection;
 
             // Move step by step toward the end point, stopping before reaching it
-            while (row != Board.tileSelected.X && col != Board.tileSelected.Y)
+            while (row != end.X && col != end.Y)
             {
                 if (Board.IsTileOccupied(row, col))
                     return true; // Found an obstacle

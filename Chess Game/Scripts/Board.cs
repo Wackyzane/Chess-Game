@@ -18,8 +18,10 @@ namespace Chess_Game.Scripts
         public static Point oldTileSelected { get; private set; }
         public static Point tileSelected { get; private set; }
 
+        public static bool CheckFlag { get; private set; }
+
         private static PictureBox ChessBoard;
-        private static PictureBox[,] tiles = new PictureBox[8,8];
+        private static PictureBox[,] tiles = new PictureBox[8, 8];
         public static Piece[,] pieces { get; private set; }
         private static string[,] startingPosition = new string[8, 8]
         {
@@ -36,10 +38,11 @@ namespace Chess_Game.Scripts
         public static void Initialize(PictureBox board)
         {
             ChessBoard = board;
-            pieces = new Piece[8,8];
+            pieces = new Piece[8, 8];
             turn = Color.White;
             oldTileSelected = new Point(5, 5);
             tileSelected = new Point(5, 5);
+            CheckFlag = false;
         }
 
         public static void CreateBoard(Form form)
@@ -104,7 +107,7 @@ namespace Chess_Game.Scripts
 
             piece = piece.Substring(0, piece.Length - 1); // Remove W or B from end of piece string
             if (Enum.TryParse(piece, out ChessPiece classification))
-                pieces[row,col] = new Piece(classification, color, imagePath);
+                pieces[row, col] = new Piece(classification, color, imagePath);
         }
 
         public static void SelectTile(object sender, EventArgs e)
@@ -125,23 +128,36 @@ namespace Chess_Game.Scripts
 
         public static void MovePiece(object sender, EventArgs e)
         {
-            if (pieces[oldTileSelected.X, oldTileSelected.Y] == null) return;
-            if (SelectedYourPiece()) return;
-            if (pieces[oldTileSelected.X, oldTileSelected.Y].color != turn) return;
-            if (!pieces[oldTileSelected.X, oldTileSelected.Y].IsPossibleMove()) return;
+            if (pieces[oldTileSelected.X, oldTileSelected.Y] == null)
+                return; // Is last select a piece
 
+            if (SelectedYourPiece())
+                return; // You did not select your own piece again
+
+            if (pieces[oldTileSelected.X, oldTileSelected.Y].color != turn)
+                return; // Trying to move enemy piece
+
+            if (!pieces[oldTileSelected.X, oldTileSelected.Y].IsPossibleMove(oldTileSelected, tileSelected))
+                return; // Illegal movement of your piece
+
+            // Need to Check Piece Taken
             pieces[tileSelected.X, tileSelected.Y] = pieces[oldTileSelected.X, oldTileSelected.Y];
             pieces[oldTileSelected.X, oldTileSelected.Y] = null;
 
+            // Check for Check
+            CheckForCheck(turn);
+
             pieces[tileSelected.X, tileSelected.Y].hasMoved = true;
-            if (turn == Color.White) 
+            if (turn == Color.White)
                 turn = Color.Black;
-            else 
+            else
                 turn = Color.White;
 
             // Update Board
             tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
             tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
+
+            // Check Promotion
         }
 
         public static void HighlightPiece(object sender, EventArgs e)
@@ -188,6 +204,10 @@ namespace Chess_Game.Scripts
                 validMoves = Bishop.BishopHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Knight)
                 validMoves = Knight.KnightHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Queen)
+                validMoves = Queen.QueenHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.King)
+                validMoves = King.KingHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
 
             foreach (Point tile in validMoves)
             {
@@ -215,6 +235,11 @@ namespace Chess_Game.Scripts
             if (col > 7 || col < 0) return false;
             if (pieces[row, col] != null) return true;
             return false;
+        }
+
+        public static void CheckForCheck(Color friendly)
+        {
+
         }
     }
 }

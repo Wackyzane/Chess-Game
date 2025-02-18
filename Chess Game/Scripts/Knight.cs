@@ -6,19 +6,19 @@ namespace Chess_Game.Scripts
 {
     internal static class Knight
     {
-        public static bool KnightPossibleMoves()
+        public static bool KnightPossibleMoves(Point start, Point end)
         {
             // Moving in an L shape
-            if (!LShapeMove())
+            if (!LShapeMove(start, end))
                 return false;
 
             return true;
         }
 
-        private static bool LShapeMove()
+        private static bool LShapeMove(Point start, Point end)
         {
-            int dx = Math.Abs(Board.tileSelected.X - Board.oldTileSelected.X);
-            int dy = Math.Abs(Board.tileSelected.Y - Board.oldTileSelected.Y);
+            int dx = Math.Abs(end.X - start.X);
+            int dy = Math.Abs(end.Y - start.Y);
 
             // A knight moves in an L-shape: (2,1) or (1,2)
             return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);

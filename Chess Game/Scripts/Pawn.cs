@@ -1,35 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System;
 
 namespace Chess_Game.Scripts
 {
     internal static class Pawn
     {
-        public static bool PawnPossibleMoves()
+        public static bool PawnPossibleMoves(Point start, Point end)
         {
             int direction = 0;
-            int moveDistance = Board.tileSelected.X - Board.oldTileSelected.X;
+            int moveDistance = Math.Abs(end.X - start.X);
             if (Board.turn == Color.White)
                 direction--;
             else
                 direction++;
 
-            if (Board.tileSelected.Y != Board.oldTileSelected.Y && !Board.IsTileOccupied(Board.tileSelected.X, Board.tileSelected.Y))
+            if (end.Y != start.Y && !Board.IsTileOccupied(end.X, end.Y))
                 return false; // Trying to move diagonally without taking a piece
 
-            if (Board.tileSelected.Y == Board.oldTileSelected.Y && Board.IsTileOccupied(Board.tileSelected.X, Board.tileSelected.Y))
+            if (end.Y == start.Y && Board.IsTileOccupied(end.X, end.Y))
                 return false; // Can't move into another piece in front of you
 
-            if (Board.IsTileOccupied(Board.tileSelected.X, Board.tileSelected.Y) && Board.SelectedYourPiece())
-                return false; // Can't take your own piece
-
-            if (moveDistance == 0)
-                return false; // Can't move on self
-
-            if (moveDistance > 2 || moveDistance < -2)
+            if (moveDistance > 2)
                 return false; // Can't move more than 3 spaces
 
-            if ((moveDistance == -2 || moveDistance == 2) && Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].hasMoved)
+            if ((moveDistance == 2) && Board.pieces[start.X, start.Y].hasMoved)
                 return false; // Pawns Can't move 2 spaces if they have moved from their starting positions
 
 
@@ -58,9 +53,9 @@ namespace Chess_Game.Scripts
             }
 
             // Diagonal Captures
-            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y - 1))
+            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y - 1) && Board.pieces[Board.tileSelected.X + direction, Board.tileSelected.Y - 1].color != piece.color)
                 validMoves.Add(new Point(Board.tileSelected.X + direction, Board.tileSelected.Y - 1));
-            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y + 1))
+            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y + 1) && Board.pieces[Board.tileSelected.X + direction, Board.tileSelected.Y + 1].color != piece.color)
                 validMoves.Add(new Point(Board.tileSelected.X + direction, Board.tileSelected.Y + 1));
 
             return validMoves;

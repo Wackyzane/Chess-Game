@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System;
 
 namespace Chess_Game.Scripts
 {
@@ -27,16 +28,22 @@ namespace Chess_Game.Scripts
             this.imagePath = imagePath;
         }
 
-        public bool IsPossibleMove()
+        public bool IsPossibleMove(Point start, Point end)
         {
-            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Pawn)
-                return Pawn.PawnPossibleMoves();
-            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Rook)
-                return Rook.RookPossibleMoves();
-            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Bishop)
-                return Bishop.BishopPossibleMoves();
-            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Knight)
-                return Knight.KnightPossibleMoves();
+            // Check to see if you are in check, if you are you can only move pieces to get yourself out of check
+
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.Pawn)
+                return Pawn.PawnPossibleMoves(start, end);
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.Rook)
+                return Rook.RookPossibleMoves(start, end);
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.Bishop)
+                return Bishop.BishopPossibleMoves(start, end);
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.Knight)
+                return Knight.KnightPossibleMoves(start, end);
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.Queen)
+                return Queen.QueenPossibleMoves(start, end);
+            if (Board.pieces[start.X, start.Y].type == ChessPiece.King)
+                return King.KingPossibleMoves(start, end);
 
             return false;
         }

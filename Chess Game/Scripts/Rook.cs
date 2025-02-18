@@ -6,26 +6,26 @@ namespace Chess_Game.Scripts
 {
     internal static class Rook
     {
-        public static bool RookPossibleMoves()
+        public static bool RookPossibleMoves(Point start, Point end)
         {
-            if (Board.tileSelected.X != Board.oldTileSelected.X && Board.tileSelected.Y != Board.oldTileSelected.Y)
+            if (end.X != start.X && end.Y != start.Y)
                 return false; // Can't move diagonally
 
-            if (PieceInWayOfMovement())
+            if (PieceInWayOfMovement(start, end))
                 return false; // If Piece in-between tile you selected and rook position
 
             return true;
         }
 
-        private static bool PieceInWayOfMovement()
+        private static bool PieceInWayOfMovement(Point start, Point end)
         {
-            int rowDirection = Math.Sign(Board.tileSelected.X - Board.oldTileSelected.X); // -1 (up), 1 (down), 0 (no change)
-            int colDirection = Math.Sign(Board.tileSelected.Y - Board.oldTileSelected.Y); // -1 (left), 1 (right), 0 (no change)
+            int rowDirection = Math.Sign(end.X - start.X); // -1 (up), 1 (down), 0 (no change)
+            int colDirection = Math.Sign(end.Y - start.Y); // -1 (left), 1 (right), 0 (no change)
 
-            int row = Board.oldTileSelected.X + rowDirection;
-            int col = Board.oldTileSelected.Y + colDirection;
+            int row = start.X + rowDirection;
+            int col = start.Y + colDirection;
 
-            while (row != Board.tileSelected.X || col != Board.tileSelected.Y)
+            while (row != end.X || col != end.Y)
             {
                 if (Board.IsTileOccupied(row, col))
                     return true; // Found an obstacle
