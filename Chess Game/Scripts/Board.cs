@@ -5,17 +5,6 @@ using System.IO;
 
 namespace Chess_Game.Scripts
 {
-    enum ChessPiece
-    {
-        Empty,
-        King,
-        Queen,
-        Bishop,
-        Knight,
-        Rook,
-        Pawn
-    }
-
     enum Player
     {
         None,
@@ -25,8 +14,13 @@ namespace Chess_Game.Scripts
 
     internal static class Board
     {
+        public static Color turn { get; private set; }
+        public static Point oldTileSelected { get; private set; }
+        public static Point tileSelected { get; private set; }
+
         private static PictureBox ChessBoard;
         private static PictureBox[,] tiles = new PictureBox[8,8];
+        public static Piece[,] pieces { get; private set; }
         private static string[,] startingPosition = new string[8, 8]
         {
             { "RookB", "KnightB", "BishopB", "QueenB", "KingB", "BishopB", "KnightB", "RookB" },
@@ -42,6 +36,10 @@ namespace Chess_Game.Scripts
         public static void Initialize(PictureBox board)
         {
             ChessBoard = board;
+            pieces = new Piece[8,8];
+            turn = Color.White;
+            oldTileSelected = new Point(5, 5);
+            tileSelected = new Point(5, 5);
         }
 
         public static void CreateBoard(Form form)
@@ -60,11 +58,14 @@ namespace Chess_Game.Scripts
                     };
 
                     tiles[row, col] = tile;
+                    tiles[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
                     form.Controls.Add(tile);
                     tile.BringToFront();
                     tile.Click += (sender, e) =>
                     {
-                        HighlightMoves(sender, e);
+                        SelectTile(sender, e);
+                        MovePiece(sender, e);
+                        HighlightPiece(sender, e);
                     };
                 }
             }
@@ -79,35 +80,137 @@ namespace Chess_Game.Scripts
             {
                 for (int col = 0; col < 8; col++)
                 {
-                    string piece = startingPosition[row, col];
-                    string imagePath = $"Assets\\{piece}.png";
+                    string imagePath = $"Assets\\{startingPosition[row, col]}.png";
                     imagePath = Path.Combine(basePath, imagePath);
-                    System.Diagnostics.Debug.WriteLine($"File Path: {imagePath}");
 
                     if (File.Exists(imagePath))
                     {
                         tiles[row, col].Image = Image.FromFile(imagePath);
-                        tiles[row, col].SizeMode = PictureBoxSizeMode.StretchImage;
+                    }
+
+                    SetupPiece(row, col, imagePath);
+                }
+            }
+        }
+
+        private static void SetupPiece(int row, int col, string imagePath)
+        {
+            string piece = Path.GetFileName(imagePath);
+            if (piece == ".png") return; // Ignore Empty Tiles
+
+            piece = piece.Substring(0, piece.Length - 4); // Remove .png
+
+            Color color = piece[piece.Length - 1] == 'W' ? Color.White : Color.Black;
+
+            piece = piece.Substring(0, piece.Length - 1); // Remove W or B from end of piece string
+            if (Enum.TryParse(piece, out ChessPiece classification))
+                pieces[row,col] = new Piece(classification, color, imagePath);
+        }
+
+        public static void SelectTile(object sender, EventArgs e)
+        {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    RemoveHighlight(row, col); // Reset Tile
+                    if (ReferenceEquals(sender, tiles[row, col]))
+                    {
+                        oldTileSelected = tileSelected;
+                        tileSelected = new Point(row, col);
                     }
                 }
             }
         }
 
-        public static void HighlightMoves(object sender, EventArgs e)
+        public static void MovePiece(object sender, EventArgs e)
         {
-            Control ctrl = (Control)sender;
+            if (pieces[oldTileSelected.X, oldTileSelected.Y] == null) return;
+            if (SelectedYourPiece()) return;
+            if (pieces[oldTileSelected.X, oldTileSelected.Y].color != turn) return;
+            if (!pieces[oldTileSelected.X, oldTileSelected.Y].IsPossibleMove()) return;
 
+            pieces[tileSelected.X, tileSelected.Y] = pieces[oldTileSelected.X, oldTileSelected.Y];
+            pieces[oldTileSelected.X, oldTileSelected.Y] = null;
+
+            pieces[tileSelected.X, tileSelected.Y].hasMoved = true;
+            if (turn == Color.White) 
+                turn = Color.Black;
+            else 
+                turn = Color.White;
+
+            // Update Board
+            tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
+            tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
+        }
+
+        public static void HighlightPiece(object sender, EventArgs e)
+        {
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
                 {
-                    tiles[row, col].BackColor = Color.FromArgb(0, Color.LightGreen);
-                    if (ReferenceEquals(sender, tiles[row, col]))
-                        tiles[row, col].BackColor = Color.FromArgb(150, Color.LightGreen);
+                    if (SelectedYourPiece())
+                    {
+                        if (ReferenceEquals(sender, tiles[row, col]))
+                        {
+                            HighlightTile(row, col);
+                            HighlightMoves();
+                            return;
+                        }
+                    }
                 }
             }
-            
-            ctrl.BackColor = Color.FromArgb(150, Color.LightGreen);
+        }
+
+        public static void HighlightTile(int row, int col)
+        {
+            if (row > 7 || row < 0) return;
+            if (col > 7 || col < 0) return;
+            tiles[row, col].BackColor = Color.FromArgb(150, Color.LightGreen);
+        }
+
+        public static void HighlightKillTile(int row, int col)
+        {
+            if (row > 7 || row < 0) return;
+            if (col > 7 || col < 0) return;
+            tiles[row, col].BackColor = Color.FromArgb(225, Color.LightPink);
+        }
+
+        public static void HighlightMoves()
+        {
+            Point[] validMoves = new Point[0];
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn)
+                validMoves = Pawn.PawnHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Rook)
+                validMoves = Rook.RookHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+
+            foreach (Point tile in validMoves)
+            {
+                if (IsTileOccupied(tile.X, tile.Y))
+                    HighlightKillTile(tile.X, tile.Y);
+                else
+                    HighlightTile(tile.X, tile.Y);
+            }
+        }
+
+        public static void RemoveHighlight(int row, int col)
+        {
+            tiles[row, col].BackColor = Color.FromArgb(0, Color.LightGreen);
+        }
+
+        public static bool SelectedYourPiece()
+        {
+            if (pieces[tileSelected.X, tileSelected.Y] == null) return false;
+            return pieces[tileSelected.X, tileSelected.Y].color == turn;
+        }
+
+        public static bool IsTileOccupied(int row, int col)
+        {
+            if (row > 7 || row < 0) return false;
+            if (col > 7 || col < 0) return false;
+            if (pieces[row, col] != null) return true;
+            return false;
         }
     }
 }
