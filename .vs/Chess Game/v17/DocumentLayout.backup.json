@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\karls\\source\\repos\\Chess Game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|c:\\users\\karls\\source\\repos\\chess game\\chess game\\scripts\\rook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|c:\\users\\karls\\source\\repos\\chess game\\chess game\\scripts\\bishop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\bishop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|C:\\Users\\karls\\source\\repos\\Chess Game\\chess game\\scripts\\rook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\rook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|c:\\users\\karls\\source\\repos\\chess game\\chess game\\scripts\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|C:\\Users\\karls\\source\\repos\\Chess Game\\chess game\\scripts\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|c:\\users\\karls\\source\\repos\\chess game\\chess game\\scripts\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\piece.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|C:\\Users\\karls\\source\\repos\\Chess Game\\chess game\\scripts\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|solutionrelative:chess game\\scripts\\board.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D96CAA07-783A-48F8-91BC-4800D6BB9A8C}|Chess Game\\Chess Game.csproj|c:\\users\\karls\\source\\repos\\chess game\\chess game\\scripts\\pawn.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -34,8 +38,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Bishop.cs",
+              "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Bishop.cs",
+              "RelativeDocumentMoniker": "Chess Game\\Scripts\\Bishop.cs",
+              "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Bishop.cs",
+              "RelativeToolTip": "Chess Game\\Scripts\\Bishop.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAA0wD4AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T21:00:57.21Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -44,53 +61,53 @@
               "RelativeDocumentMoniker": "Chess Game\\Scripts\\Piece.cs",
               "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Piece.cs",
               "RelativeToolTip": "Chess Game\\Scripts\\Piece.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAqwCIAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAqwCQAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T07:22:39.532Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Rook.cs",
               "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Rook.cs",
               "RelativeDocumentMoniker": "Chess Game\\Scripts\\Rook.cs",
               "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Rook.cs",
               "RelativeToolTip": "Chess Game\\Scripts\\Rook.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwDsAAABIAAAAAAAAAA==",
+              "ViewState": "AgIAACcAAAAAAAAAAAAowDsAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T11:27:17.545Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Board.cs",
               "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Board.cs",
               "RelativeDocumentMoniker": "Chess Game\\Scripts\\Board.cs",
               "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Board.cs",
               "RelativeToolTip": "Chess Game\\Scripts\\Board.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAUwLMAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAH0AAAAAAAAAAAA4wLsAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T05:54:33.766Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Pawn.cs",
               "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Pawn.cs",
               "RelativeDocumentMoniker": "Chess Game\\Scripts\\Pawn.cs",
               "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Scripts\\Pawn.cs",
               "RelativeToolTip": "Chess Game\\Scripts\\Pawn.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAcAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-18T09:59:37.375Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Form1.cs",
               "RelativeDocumentMoniker": "Chess Game\\Form1.cs",
@@ -98,20 +115,18 @@
               "RelativeToolTip": "Chess Game\\Form1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-12T23:18:46.461Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-12T23:18:46.461Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Form1.cs",
               "RelativeDocumentMoniker": "Chess Game\\Form1.cs",
               "ToolTip": "C:\\Users\\karls\\source\\repos\\Chess Game\\Chess Game\\Form1.cs [Design]",
               "RelativeToolTip": "Chess Game\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-12T23:14:56.66Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-02-12T23:14:56.66Z"
             }
           ]
         }

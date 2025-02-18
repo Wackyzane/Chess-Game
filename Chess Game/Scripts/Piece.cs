@@ -33,6 +33,8 @@ namespace Chess_Game.Scripts
                 return Pawn.PawnPossibleMoves();
             if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Rook)
                 return Rook.RookPossibleMoves();
+            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Bishop)
+                return Bishop.BishopPossibleMoves();
 
             return false;
         }

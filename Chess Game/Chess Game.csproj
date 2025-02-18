@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Bishop.cs" />
     <Compile Include="Scripts\Board.cs" />
     <Compile Include="Scripts\Pawn.cs" />
     <Compile Include="Scripts\Piece.cs" />
