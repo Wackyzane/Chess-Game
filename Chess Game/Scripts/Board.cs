@@ -186,6 +186,8 @@ namespace Chess_Game.Scripts
                 validMoves = Rook.RookHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Bishop)
                 validMoves = Bishop.BishopHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Knight)
+                validMoves = Knight.KnightHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
 
             foreach (Point tile in validMoves)
             {

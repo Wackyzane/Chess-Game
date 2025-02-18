@@ -35,6 +35,8 @@ namespace Chess_Game.Scripts
                 return Rook.RookPossibleMoves();
             if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Bishop)
                 return Bishop.BishopPossibleMoves();
+            if (Board.pieces[Board.oldTileSelected.X, Board.oldTileSelected.Y].type == ChessPiece.Knight)
+                return Knight.KnightPossibleMoves();
 
             return false;
         }
