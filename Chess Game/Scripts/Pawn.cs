@@ -9,24 +9,35 @@ namespace Chess_Game.Scripts
         public static bool PawnPossibleMoves(Point start, Point end)
         {
             int direction = 0;
-            int moveDistance = Math.Abs(end.X - start.X);
-            if (Board.turn == Color.White)
-                direction--;
+            int moveDistance = end.X - start.X;
+
+            if (Board.pieces[start.X, start.Y].color == Color.White)
+                direction = -1;
             else
-                direction++;
+                direction = 1;
 
-            if (end.Y != start.Y && !Board.IsTileOccupied(end.X, end.Y))
-                return false; // Trying to move diagonally without taking a piece
+            if (end.Y != start.Y) // Moving Diagonally
+            {
+                if (Math.Abs(end.Y - start.Y) > 1 || moveDistance != direction)
+                    return false; // Pawns can only move 1 tile diagonally while capturing
 
-            if (end.Y == start.Y && Board.IsTileOccupied(end.X, end.Y))
-                return false; // Can't move into another piece in front of you
+                if (!Board.IsTileOccupied(end.X, end.Y) || Board.pieces[end.X, end.Y].color == Board.pieces[start.X, start.Y].color)
+                    return false; // Can only move Diagonally if capturing enemy piece
+            }
+            else // Moving forward
+            {
+                if (Board.IsTileOccupied(end.X, end.Y))
+                    return false; // Can't move into occupied tile
 
-            if (moveDistance > 2)
-                return false; // Can't move more than 3 spaces
+                if (moveDistance != direction && moveDistance != 2 * direction)
+                    return false; // Pawns can only move 1 or 2 spaces forward
 
-            if ((moveDistance == 2) && Board.pieces[start.X, start.Y].hasMoved)
-                return false; // Pawns Can't move 2 spaces if they have moved from their starting positions
+                if (moveDistance == 2 * direction && Board.pieces[start.X, start.Y].hasMoved)
+                    return false; // Can't move 2 spaces if pawn has moved before
 
+                if (moveDistance == 2 * direction && Board.IsTileOccupied(start.X + direction, start.Y))
+                    return false; // Can't jump over piece
+            }
 
             return true;
         }

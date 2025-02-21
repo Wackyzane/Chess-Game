@@ -7,6 +7,7 @@ namespace Chess_Game.Scripts
 {
     internal static class Bishop
     {
+
         public static bool BishopPossibleMoves(Point start, Point end)
         {
             if (Math.Abs(end.X - start.X) != Math.Abs(end.Y - start.Y))

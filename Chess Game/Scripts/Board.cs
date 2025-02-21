@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Diagnostics;
 
 namespace Chess_Game.Scripts
 {
@@ -18,20 +19,18 @@ namespace Chess_Game.Scripts
         public static Point oldTileSelected { get; private set; }
         public static Point tileSelected { get; private set; }
 
-        public static bool CheckFlag { get; private set; }
-
         private static PictureBox ChessBoard;
         private static PictureBox[,] tiles = new PictureBox[8, 8];
         public static Piece[,] pieces { get; private set; }
         private static string[,] startingPosition = new string[8, 8]
         {
             { "RookB", "KnightB", "BishopB", "QueenB", "KingB", "BishopB", "KnightB", "RookB" },
-            { "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
+            { "PawnB", "PawnW", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
-            { "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW" },
+            { "PawnW", "PawnW", "PawnB", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW" },
             { "RookW", "KnightW", "BishopW", "QueenW", "KingW", "BishopW", "KnightW", "RookW" }
         };
 
@@ -42,7 +41,6 @@ namespace Chess_Game.Scripts
             turn = Color.White;
             oldTileSelected = new Point(5, 5);
             tileSelected = new Point(5, 5);
-            CheckFlag = false;
         }
 
         public static void CreateBoard(Form form)
@@ -141,13 +139,35 @@ namespace Chess_Game.Scripts
                 return; // Illegal movement of your piece
 
             // Need to Check Piece Taken
+            Piece tempPiece = pieces[tileSelected.X, tileSelected.Y];
             pieces[tileSelected.X, tileSelected.Y] = pieces[oldTileSelected.X, oldTileSelected.Y];
             pieces[oldTileSelected.X, oldTileSelected.Y] = null;
 
-            // Check for Check
-            CheckForCheck(turn);
+            if (CheckSideForCheck(GetKingPosition(turn), turn))
+            {
+                pieces[oldTileSelected.X, oldTileSelected.Y] = pieces[tileSelected.X, tileSelected.Y];
+                pieces[tileSelected.X, tileSelected.Y] = tempPiece;
+                return;
+            }
 
             pieces[tileSelected.X, tileSelected.Y].hasMoved = true;
+
+            // Check Promotion
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn && (tileSelected.X == 0 || tileSelected.X == 7))
+            {
+                string newImagePath = "";
+
+                if (pieces[tileSelected.X, tileSelected.Y].color == Color.White)
+                    newImagePath = pieces[tileSelected.X, tileSelected.Y].imagePath.Substring(0, pieces[tileSelected.X, tileSelected.Y].imagePath.Length - 9) + "QueenW.png";
+                else
+                    newImagePath = pieces[tileSelected.X, tileSelected.Y].imagePath.Substring(0, pieces[tileSelected.X, tileSelected.Y].imagePath.Length - 9) + "QueenB.png";
+
+                pieces[tileSelected.X, tileSelected.Y].type = ChessPiece.Queen;
+                pieces[tileSelected.X, tileSelected.Y].imagePath = newImagePath;
+                tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
+            }
+
+            // Change Sides
             if (turn == Color.White)
                 turn = Color.Black;
             else
@@ -156,8 +176,6 @@ namespace Chess_Game.Scripts
             // Update Board
             tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
             tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
-
-            // Check Promotion
         }
 
         public static void HighlightPiece(object sender, EventArgs e)
@@ -237,9 +255,42 @@ namespace Chess_Game.Scripts
             return false;
         }
 
-        public static void CheckForCheck(Color friendly)
+        public static bool CheckSideForCheck(Point kingPosition, Color side)
         {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Piece piece = pieces[row, col];
 
+                    if (piece == null || piece.color == side)
+                        continue; // Don't check empty spaces and your own pieces
+
+                    if (piece.IsPossibleMove(new Point(row, col), kingPosition)) // Can piece put king in check
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        
+        private static Point GetKingPosition(Color side)
+        {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Piece piece = pieces[row, col];
+
+                    if (piece == null || piece.color != side)
+                        continue;
+
+                    if (piece.type == ChessPiece.King)
+                        return new Point(row, col);
+                }
+            }
+
+            return new Point();
         }
     }
 }

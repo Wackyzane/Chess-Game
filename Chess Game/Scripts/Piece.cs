@@ -19,7 +19,7 @@ namespace Chess_Game.Scripts
         public Color color = Color.White;
         public bool hasMoved = false;
 
-        public string imagePath {  get; private set; }
+        public string imagePath;
 
         public Piece(ChessPiece type, Color pieceColor, string imagePath)
         {
@@ -30,8 +30,6 @@ namespace Chess_Game.Scripts
 
         public bool IsPossibleMove(Point start, Point end)
         {
-            // Check to see if you are in check, if you are you can only move pieces to get yourself out of check
-
             if (Board.pieces[start.X, start.Y].type == ChessPiece.Pawn)
                 return Pawn.PawnPossibleMoves(start, end);
             if (Board.pieces[start.X, start.Y].type == ChessPiece.Rook)
