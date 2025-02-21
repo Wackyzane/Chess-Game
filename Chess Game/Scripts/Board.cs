@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
-using System.Diagnostics;
 
 namespace Chess_Game.Scripts
 {
@@ -23,22 +22,22 @@ namespace Chess_Game.Scripts
         private static Point pawnToPromote;
         public static bool gamePause = false;
 
-        private static PictureBox ChessBoard;
+        private static Panel ChessBoard;
         private static PictureBox[,] tiles = new PictureBox[8, 8];
         public static Piece[,] pieces { get; private set; }
         private static string[,] startingPosition = new string[8, 8]
         {
             { "RookB", "KnightB", "BishopB", "QueenB", "KingB", "BishopB", "KnightB", "RookB" },
-            { "PawnB", "PawnW", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
+            { "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "" },
-            { "PawnW", "PawnW", "PawnB", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW" },
+            { "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW", "PawnW" },
             { "RookW", "KnightW", "BishopW", "QueenW", "KingW", "BishopW", "KnightW", "RookW" }
         };
 
-        public static void Initialize(PictureBox board, BackgroundWindow backgroundWindow)
+        public static void Initialize(Panel board, BackgroundWindow backgroundWindow)
         {
             baseForm = backgroundWindow;
             ChessBoard = board;
@@ -161,6 +160,7 @@ namespace Chess_Game.Scripts
             {
                 pieces[oldTileSelected.X, oldTileSelected.Y] = pieces[tileSelected.X, tileSelected.Y];
                 pieces[tileSelected.X, tileSelected.Y] = tempPiece;
+                CheckSideForCheckmate(GetKingPosition(turn), turn);
                 return;
             }
 
@@ -243,17 +243,17 @@ namespace Chess_Game.Scripts
         {
             Point[] validMoves = new Point[0];
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn)
-                validMoves = Pawn.PawnHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = Pawn.PawnHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Rook)
-                validMoves = Rook.RookHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = Rook.RookHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Bishop)
-                validMoves = Bishop.BishopHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = Bishop.BishopHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Knight)
-                validMoves = Knight.KnightHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = Knight.KnightHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Queen)
-                validMoves = Queen.QueenHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = Queen.QueenHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.King)
-                validMoves = King.KingHighlightedMoves(pieces[tileSelected.X, tileSelected.Y]).ToArray();
+                validMoves = King.KingHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
 
             foreach (Point tile in validMoves)
             {
@@ -299,6 +299,62 @@ namespace Chess_Game.Scripts
                 }
             }
 
+            return false;
+        }
+
+        public static bool CheckSideForCheckmate(Point kingPosition, Color side)
+        {
+            bool temp = false;
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Piece piece = pieces[row, col];
+
+                    if (piece == null || piece.color != side)
+                        continue;
+
+                    Point[] validMoves = new Point[0];
+
+                    if (piece.type == ChessPiece.Pawn)
+                        validMoves = Pawn.PawnHighlightedMoves(new Point(row, col), piece).ToArray();
+                    if (piece.type == ChessPiece.Rook)
+                        validMoves = Rook.RookHighlightedMoves(new Point(row, col), piece).ToArray();
+                    if (piece.type == ChessPiece.Bishop)
+                        validMoves = Bishop.BishopHighlightedMoves(new Point(row, col), piece).ToArray();
+                    if (piece.type == ChessPiece.Knight)
+                        validMoves = Knight.KnightHighlightedMoves(new Point(row, col), piece).ToArray();
+                    if (piece.type == ChessPiece.Queen)
+                        validMoves = Queen.QueenHighlightedMoves(new Point(row, col), piece).ToArray();
+                    if (piece.type == ChessPiece.King)
+                        validMoves = King.KingHighlightedMoves(new Point(row, col), piece).ToArray();
+
+                    foreach (Point move in validMoves)
+                    {
+                        Piece tempPiece = pieces[move.X, move.Y];
+                        pieces[move.X, move.Y] = pieces[row, col];
+                        pieces[row, col] = null;
+
+                        Point newKingPosition = kingPosition;
+
+                        if (pieces[move.X, move.Y].type == ChessPiece.King)
+                            newKingPosition = move;
+
+                        if (!CheckSideForCheck(newKingPosition, side))
+                        {
+                            HighlightKillTile(move.X, move.Y);
+                            temp = true;
+                        }
+
+                        pieces[row, col] = pieces[move.X, move.Y];
+                        pieces[move.X, move.Y] = tempPiece;
+                    }
+                }
+            }
+            if (temp)
+                return true;
+
+            baseForm.ShowEndGame();
             return false;
         }
         

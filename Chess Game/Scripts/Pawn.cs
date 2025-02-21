@@ -42,7 +42,7 @@ namespace Chess_Game.Scripts
             return true;
         }
 
-        public static List<Point> PawnHighlightedMoves(Piece piece)
+        public static List<Point> PawnHighlightedMoves(Point start, Piece piece)
         {
             List<Point> validMoves = new List<Point>();
 
@@ -53,21 +53,21 @@ namespace Chess_Game.Scripts
                 direction++;
 
             // Forward Movement
-            if (!Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y)) {
-                validMoves.Add(new Point(Board.tileSelected.X + direction, Board.tileSelected.Y));
+            if (!Board.IsTileOccupied(start.X + direction, start.Y)) {
+                validMoves.Add(new Point(start.X + direction, start.Y));
 
                 // Double Movement
-                if (!piece.hasMoved && !Board.IsTileOccupied(Board.tileSelected.X + (direction * 2), Board.tileSelected.Y))
+                if (!piece.hasMoved && !Board.IsTileOccupied(start.X + (direction * 2), start.Y))
                 {
-                    validMoves.Add(new Point(Board.tileSelected.X + (direction * 2), Board.tileSelected.Y));
+                    validMoves.Add(new Point(start.X + (direction * 2), start.Y));
                 }
             }
 
             // Diagonal Captures
-            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y - 1) && Board.pieces[Board.tileSelected.X + direction, Board.tileSelected.Y - 1].color != piece.color)
-                validMoves.Add(new Point(Board.tileSelected.X + direction, Board.tileSelected.Y - 1));
-            if (Board.IsTileOccupied(Board.tileSelected.X + direction, Board.tileSelected.Y + 1) && Board.pieces[Board.tileSelected.X + direction, Board.tileSelected.Y + 1].color != piece.color)
-                validMoves.Add(new Point(Board.tileSelected.X + direction, Board.tileSelected.Y + 1));
+            if (Board.IsTileOccupied(start.X + direction, start.Y - 1) && Board.pieces[start.X + direction, start.Y - 1].color != piece.color)
+                validMoves.Add(new Point(start.X + direction, start.Y - 1));
+            if (Board.IsTileOccupied(start.X + direction, start.Y + 1) && Board.pieces[start.X + direction, start.Y + 1].color != piece.color)
+                validMoves.Add(new Point(start.X + direction, start.Y + 1));
 
             return validMoves;
         }

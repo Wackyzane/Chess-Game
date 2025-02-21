@@ -1,5 +1,6 @@
 ﻿using Chess_Game.Scripts;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chess_Game
@@ -17,8 +18,8 @@ namespace Chess_Game
         {
             Board.gamePause = true;
             PromotionPanel.Enabled = true;
-            PromotionPanel.BringToFront();
             PromotionPanel.Visible = true;
+            PromotionPanel.BringToFront();
         }
 
         public void DisablePromotionPanel()
@@ -26,6 +27,14 @@ namespace Chess_Game
             Board.gamePause = false;
             PromotionPanel.Enabled = false;
             PromotionPanel.Visible = false;
+        }
+
+        public void ShowEndGame()
+        {
+            Board.gamePause = true;
+            WinGameScreen.Enabled = true;
+            WinGameScreen.Visible = true;
+            WinGameScreen.BringToFront();
         }
 
         private void ChangePawnToQueen(object sender, System.EventArgs e)

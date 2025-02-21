@@ -8,37 +8,13 @@ namespace Chess_Game.Scripts
     {
         public static bool KingPossibleMoves(Point start, Point end)
         {
-            // Distance Greater than 1
             if (Math.Abs(end.X - start.X) > 1 || Math.Abs(end.Y - start.Y) > 1)
-                return false;
-
-            // Puts you in Check
-            //if (IsPointCheck(end, Board.pieces[start.X, start.Y].color))
-            //    return false;
+                return false; // Distance Greater than 1
 
             return true;
         }
 
-        public static bool IsKingInCheck(Point kingPosition, Color kingColor)
-        {
-            for (int row = 0; row < 8; row++)
-            {
-                for (int col = 0; col < 8; col++)
-                {
-                    Piece piece = Board.pieces[row, col];
-
-                    if (piece == null || piece.color != kingColor)
-                        continue;
-
-                    if (piece.IsPossibleMove(new Point(row, col), kingPosition))
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static List<Point> KingHighlightedMoves(Piece piece)
+        public static List<Point> KingHighlightedMoves(Point start, Piece piece)
         {
             List<Point> validMoves = new List<Point>();
 
@@ -55,8 +31,8 @@ namespace Chess_Game.Scripts
 
             foreach (var dir in directions)
             {
-                int row = Board.tileSelected.X + dir[0];
-                int col = Board.tileSelected.Y + dir[1];
+                int row = start.X + dir[0];
+                int col = start.Y + dir[1];
 
                 if (row >= 0 && row < 8 && col >= 0 && col < 8) // Stay within board limits
                 {

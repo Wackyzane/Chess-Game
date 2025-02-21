@@ -24,7 +24,7 @@ namespace Chess_Game.Scripts
             return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
         }
 
-        public static List<Point> KnightHighlightedMoves(Piece piece)
+        public static List<Point> KnightHighlightedMoves(Point start, Piece piece)
         {
             List<Point> validMoves = new List<Point>();
 
@@ -38,8 +38,8 @@ namespace Chess_Game.Scripts
 
             foreach (var move in moves)
             {
-                int row = Board.tileSelected.X + move[0];
-                int col = Board.tileSelected.Y + move[1];
+                int row = start.X + move[0];
+                int col = start.Y + move[1];
 
                 // Ensure move is within bounds
                 if (row >= 0 && row < 8 && col >= 0 && col < 8)

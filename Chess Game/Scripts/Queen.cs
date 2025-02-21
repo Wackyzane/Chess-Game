@@ -13,15 +13,15 @@ namespace Chess_Game.Scripts
             return true;
         }
 
-        public static List<Point> QueenHighlightedMoves(Piece piece)
+        public static List<Point> QueenHighlightedMoves(Point start, Piece piece)
         {
             List<Point> validMoves = new List<Point>();
 
             // Get Rook HighlightedMoves
-            validMoves.AddRange(Rook.RookHighlightedMoves(piece));
+            validMoves.AddRange(Rook.RookHighlightedMoves(start, piece));
 
             // Get Bishop HighlightedMoves
-            validMoves.AddRange(Bishop.BishopHighlightedMoves(piece));
+            validMoves.AddRange(Bishop.BishopHighlightedMoves(start, piece));
 
             return validMoves;
         }

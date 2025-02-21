@@ -39,7 +39,7 @@ namespace Chess_Game.Scripts
             return false;
         }
 
-        public static List<Point> BishopHighlightedMoves(Piece piece)
+        public static List<Point> BishopHighlightedMoves(Point start, Piece piece)
         {
             List<Point> validMoves = new List<Point>();
 
@@ -52,8 +52,8 @@ namespace Chess_Game.Scripts
 
             foreach (var dir in directions)
             {
-                int row = Board.tileSelected.X + dir[0];
-                int col = Board.tileSelected.Y + dir[1];
+                int row = start.X + dir[0];
+                int col = start.Y + dir[1];
 
                 while (row >= 0 && row < 8 && col >= 0 && col < 8) // Stay within board limits
                 {
