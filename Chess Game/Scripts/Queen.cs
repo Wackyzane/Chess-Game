@@ -5,8 +5,6 @@ namespace Chess_Game.Scripts
 {
     internal static class Queen
     {
-        public static string queenImagePath {  get; set; }
-
         public static bool QueenPossibleMoves(Point start, Point end)
         {
             if (!Rook.RookPossibleMoves(start, end) && !Bishop.BishopPossibleMoves(start, end))

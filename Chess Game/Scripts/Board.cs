@@ -19,6 +19,10 @@ namespace Chess_Game.Scripts
         public static Point oldTileSelected { get; private set; }
         public static Point tileSelected { get; private set; }
 
+        private static BackgroundWindow baseForm;
+        private static Point pawnToPromote;
+        public static bool gamePause = false;
+
         private static PictureBox ChessBoard;
         private static PictureBox[,] tiles = new PictureBox[8, 8];
         public static Piece[,] pieces { get; private set; }
@@ -34,8 +38,9 @@ namespace Chess_Game.Scripts
             { "RookW", "KnightW", "BishopW", "QueenW", "KingW", "BishopW", "KnightW", "RookW" }
         };
 
-        public static void Initialize(PictureBox board)
+        public static void Initialize(PictureBox board, BackgroundWindow backgroundWindow)
         {
+            baseForm = backgroundWindow;
             ChessBoard = board;
             pieces = new Piece[8, 8];
             turn = Color.White;
@@ -54,8 +59,8 @@ namespace Chess_Game.Scripts
                         Size = new Size(54, 54),
                         Location = new Point(ChessBoard.Left + col * 53, ChessBoard.Top + row * 53),
                         BackColor = Color.FromArgb(0, Color.LightGreen),
-                        BorderStyle = BorderStyle.None, // Debugging grid (optional)
-                        Parent = ChessBoard
+                        BorderStyle = BorderStyle.FixedSingle, // Debugging grid (optional)
+                        Parent = form
                     };
 
                     tiles[row, col] = tile;
@@ -71,12 +76,15 @@ namespace Chess_Game.Scripts
                 }
             }
 
+            ChessBoard.SendToBack();
+
             InitialBoardConfiguration();
         }
 
         public static void InitialBoardConfiguration()
         {
             string basePath = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
+
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
@@ -110,6 +118,9 @@ namespace Chess_Game.Scripts
 
         public static void SelectTile(object sender, EventArgs e)
         {
+            if (gamePause)
+                return;
+
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
@@ -126,6 +137,9 @@ namespace Chess_Game.Scripts
 
         public static void MovePiece(object sender, EventArgs e)
         {
+            if (gamePause) 
+                return;
+
             if (pieces[oldTileSelected.X, oldTileSelected.Y] == null)
                 return; // Is last select a piece
 
@@ -154,18 +168,7 @@ namespace Chess_Game.Scripts
 
             // Check Promotion
             if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn && (tileSelected.X == 0 || tileSelected.X == 7))
-            {
-                string newImagePath = "";
-
-                if (pieces[tileSelected.X, tileSelected.Y].color == Color.White)
-                    newImagePath = pieces[tileSelected.X, tileSelected.Y].imagePath.Substring(0, pieces[tileSelected.X, tileSelected.Y].imagePath.Length - 9) + "QueenW.png";
-                else
-                    newImagePath = pieces[tileSelected.X, tileSelected.Y].imagePath.Substring(0, pieces[tileSelected.X, tileSelected.Y].imagePath.Length - 9) + "QueenB.png";
-
-                pieces[tileSelected.X, tileSelected.Y].type = ChessPiece.Queen;
-                pieces[tileSelected.X, tileSelected.Y].imagePath = newImagePath;
-                tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
-            }
+                EnablePromotion();
 
             // Change Sides
             if (turn == Color.White)
@@ -178,8 +181,33 @@ namespace Chess_Game.Scripts
             tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
         }
 
+        public static void EnablePromotion()
+        {
+            pawnToPromote = new Point(tileSelected.X, tileSelected.Y);
+            baseForm.EnablePromotionPanel();
+        }
+
+        public static void PawnPromotion(ChessPiece type)
+        {
+            Piece piece = pieces[pawnToPromote.X, pawnToPromote.Y];
+            string stringAddition = type.ToString();
+
+            if (piece.color == Color.White)
+                stringAddition += "W.png";
+            else
+                stringAddition += "B.png";
+
+            piece.imagePath = piece.imagePath.Substring(0, piece.imagePath.Length - 9) + stringAddition;
+
+            piece.type = type;
+            tiles[pawnToPromote.X, pawnToPromote.Y].Image = Image.FromFile(piece.imagePath);
+        }
+
         public static void HighlightPiece(object sender, EventArgs e)
         {
+            if (gamePause)
+                return;
+
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
