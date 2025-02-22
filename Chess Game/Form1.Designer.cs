@@ -48,19 +48,19 @@
             this.BlackDeadBox = new System.Windows.Forms.GroupBox();
             this.WhiteDeadBox = new System.Windows.Forms.GroupBox();
             this.PromotionPanel = new System.Windows.Forms.Panel();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.KnightSelection = new System.Windows.Forms.PictureBox();
-            this.QueenSelection = new System.Windows.Forms.PictureBox();
+            this.Rook = new System.Windows.Forms.PictureBox();
+            this.Bishop = new System.Windows.Forms.PictureBox();
+            this.Knight = new System.Windows.Forms.PictureBox();
+            this.Queen = new System.Windows.Forms.PictureBox();
             this.PawnPromotionLabel = new System.Windows.Forms.Label();
             this.WinGameScreen = new System.Windows.Forms.Panel();
             this.WinGameText = new System.Windows.Forms.Label();
             this.ChessBoard = new System.Windows.Forms.Panel();
             this.PromotionPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.KnightSelection)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.QueenSelection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rook)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Bishop)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Knight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Queen)).BeginInit();
             this.WinGameScreen.SuspendLayout();
             this.ChessBoard.SuspendLayout();
             this.SuspendLayout();
@@ -262,59 +262,59 @@
             // PromotionPanel
             // 
             this.PromotionPanel.BackColor = System.Drawing.Color.LightCyan;
-            this.PromotionPanel.Controls.Add(this.pictureBox4);
-            this.PromotionPanel.Controls.Add(this.pictureBox3);
-            this.PromotionPanel.Controls.Add(this.KnightSelection);
-            this.PromotionPanel.Controls.Add(this.QueenSelection);
+            this.PromotionPanel.Controls.Add(this.Rook);
+            this.PromotionPanel.Controls.Add(this.Bishop);
+            this.PromotionPanel.Controls.Add(this.Knight);
+            this.PromotionPanel.Controls.Add(this.Queen);
             this.PromotionPanel.Controls.Add(this.PawnPromotionLabel);
             this.PromotionPanel.Location = new System.Drawing.Point(279, 175);
             this.PromotionPanel.Name = "PromotionPanel";
             this.PromotionPanel.Size = new System.Drawing.Size(321, 110);
             this.PromotionPanel.TabIndex = 20;
             // 
-            // pictureBox4
+            // Rook
             // 
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(257, 37);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox4.TabIndex = 4;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.ChangePawnToRook);
+            this.Rook.Image = ((System.Drawing.Image)(resources.GetObject("Rook.Image")));
+            this.Rook.Location = new System.Drawing.Point(257, 37);
+            this.Rook.Name = "Rook";
+            this.Rook.Size = new System.Drawing.Size(50, 50);
+            this.Rook.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Rook.TabIndex = 4;
+            this.Rook.TabStop = false;
+            this.Rook.Click += new System.EventHandler(this.PromotePawn);
             // 
-            // pictureBox3
+            // Bishop
             // 
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(184, 37);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 3;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.ChangePawnToBishop);
+            this.Bishop.Image = ((System.Drawing.Image)(resources.GetObject("Bishop.Image")));
+            this.Bishop.Location = new System.Drawing.Point(184, 37);
+            this.Bishop.Name = "Bishop";
+            this.Bishop.Size = new System.Drawing.Size(50, 50);
+            this.Bishop.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Bishop.TabIndex = 3;
+            this.Bishop.TabStop = false;
+            this.Bishop.Click += new System.EventHandler(this.PromotePawn);
             // 
-            // KnightSelection
+            // Knight
             // 
-            this.KnightSelection.Image = ((System.Drawing.Image)(resources.GetObject("KnightSelection.Image")));
-            this.KnightSelection.Location = new System.Drawing.Point(97, 37);
-            this.KnightSelection.Name = "KnightSelection";
-            this.KnightSelection.Size = new System.Drawing.Size(50, 50);
-            this.KnightSelection.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.KnightSelection.TabIndex = 2;
-            this.KnightSelection.TabStop = false;
-            this.KnightSelection.Click += new System.EventHandler(this.ChangePawnToKnight);
+            this.Knight.Image = ((System.Drawing.Image)(resources.GetObject("Knight.Image")));
+            this.Knight.Location = new System.Drawing.Point(97, 37);
+            this.Knight.Name = "Knight";
+            this.Knight.Size = new System.Drawing.Size(50, 50);
+            this.Knight.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Knight.TabIndex = 2;
+            this.Knight.TabStop = false;
+            this.Knight.Click += new System.EventHandler(this.PromotePawn);
             // 
-            // QueenSelection
+            // Queen
             // 
-            this.QueenSelection.Image = ((System.Drawing.Image)(resources.GetObject("QueenSelection.Image")));
-            this.QueenSelection.Location = new System.Drawing.Point(18, 37);
-            this.QueenSelection.Name = "QueenSelection";
-            this.QueenSelection.Size = new System.Drawing.Size(50, 50);
-            this.QueenSelection.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.QueenSelection.TabIndex = 1;
-            this.QueenSelection.TabStop = false;
-            this.QueenSelection.Click += new System.EventHandler(this.ChangePawnToQueen);
+            this.Queen.Image = ((System.Drawing.Image)(resources.GetObject("Queen.Image")));
+            this.Queen.Location = new System.Drawing.Point(18, 37);
+            this.Queen.Name = "Queen";
+            this.Queen.Size = new System.Drawing.Size(50, 50);
+            this.Queen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Queen.TabIndex = 1;
+            this.Queen.TabStop = false;
+            this.Queen.Click += new System.EventHandler(this.PromotePawn);
             // 
             // PawnPromotionLabel
             // 
@@ -387,10 +387,10 @@
             this.Text = "Form1";
             this.PromotionPanel.ResumeLayout(false);
             this.PromotionPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.KnightSelection)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.QueenSelection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rook)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Bishop)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Knight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Queen)).EndInit();
             this.WinGameScreen.ResumeLayout(false);
             this.WinGameScreen.PerformLayout();
             this.ChessBoard.ResumeLayout(false);
@@ -419,10 +419,10 @@
         private System.Windows.Forms.GroupBox BlackDeadBox;
         private System.Windows.Forms.GroupBox WhiteDeadBox;
         private System.Windows.Forms.Panel PromotionPanel;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox KnightSelection;
-        private System.Windows.Forms.PictureBox QueenSelection;
+        private System.Windows.Forms.PictureBox Rook;
+        private System.Windows.Forms.PictureBox Bishop;
+        private System.Windows.Forms.PictureBox Knight;
+        private System.Windows.Forms.PictureBox Queen;
         private System.Windows.Forms.Label PawnPromotionLabel;
         private System.Windows.Forms.Panel WinGameScreen;
         private System.Windows.Forms.Label WinGameText;

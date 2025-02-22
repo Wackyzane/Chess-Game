@@ -14,19 +14,12 @@ namespace Chess_Game
             Board.CreateBoard(this);
         }
 
-        public void EnablePromotionPanel()
+        public void EnableDisablePromotionPanel(bool enableStatus)
         {
-            Board.gamePause = true;
-            PromotionPanel.Enabled = true;
-            PromotionPanel.Visible = true;
+            Board.gamePause = enableStatus;
+            PromotionPanel.Enabled = enableStatus;
+            PromotionPanel.Visible = enableStatus;
             PromotionPanel.BringToFront();
-        }
-
-        public void DisablePromotionPanel()
-        {
-            Board.gamePause = false;
-            PromotionPanel.Enabled = false;
-            PromotionPanel.Visible = false;
         }
 
         public void ShowEndGame()
@@ -37,28 +30,15 @@ namespace Chess_Game
             WinGameScreen.BringToFront();
         }
 
-        private void ChangePawnToQueen(object sender, System.EventArgs e)
+        public void PromotePawn(object sender, EventArgs e)
         {
-            Board.PawnPromotion(ChessPiece.Queen);
-            DisablePromotionPanel();
-        }
+            PictureBox button = sender as PictureBox;
 
-        private void ChangePawnToKnight(object sender, System.EventArgs e)
-        {
-            Board.PawnPromotion(ChessPiece.Knight);
-            DisablePromotionPanel();
-        }
-
-        private void ChangePawnToBishop(object sender, System.EventArgs e)
-        {
-            Board.PawnPromotion(ChessPiece.Bishop);
-            DisablePromotionPanel();
-        }
-
-        private void ChangePawnToRook(object sender, System.EventArgs e)
-        {
-            Board.PawnPromotion(ChessPiece.Rook);
-            DisablePromotionPanel();
+            if (Enum.TryParse(button.Name, out ChessPiece piece))
+            {
+                Board.PawnPromotion(piece);
+                EnableDisablePromotionPanel(false);
+            }
         }
     }
 }

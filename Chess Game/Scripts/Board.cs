@@ -19,7 +19,6 @@ namespace Chess_Game.Scripts
         public static Point tileSelected { get; private set; }
 
         private static BackgroundWindow baseForm;
-        private static Point pawnToPromote;
         public static bool gamePause = false;
 
         private static Panel ChessBoard;
@@ -58,7 +57,7 @@ namespace Chess_Game.Scripts
                         Size = new Size(54, 54),
                         Location = new Point(ChessBoard.Left + col * 53, ChessBoard.Top + row * 53),
                         BackColor = Color.FromArgb(0, Color.LightGreen),
-                        BorderStyle = BorderStyle.FixedSingle, // Debugging grid (optional)
+                        BorderStyle = BorderStyle.FixedSingle,
                         Parent = form
                     };
 
@@ -70,35 +69,28 @@ namespace Chess_Game.Scripts
                     {
                         SelectTile(sender, e);
                         MovePiece(sender, e);
-                        HighlightPiece(sender, e);
                     };
+
+                    SetupPictureBox(row, col);
                 }
             }
 
             ChessBoard.SendToBack();
-
-            InitialBoardConfiguration();
         }
 
-        public static void InitialBoardConfiguration()
+        private static void SetupPictureBox(int row, int col)
         {
             string basePath = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
 
-            for (int row = 0; row < 8; row++)
+            string imagePath = $"Assets\\{startingPosition[row, col]}.png";
+            imagePath = Path.Combine(basePath, imagePath);
+
+            if (File.Exists(imagePath))
             {
-                for (int col = 0; col < 8; col++)
-                {
-                    string imagePath = $"Assets\\{startingPosition[row, col]}.png";
-                    imagePath = Path.Combine(basePath, imagePath);
-
-                    if (File.Exists(imagePath))
-                    {
-                        tiles[row, col].Image = Image.FromFile(imagePath);
-                    }
-
-                    SetupPiece(row, col, imagePath);
-                }
+                tiles[row, col].Image = Image.FromFile(imagePath);
             }
+
+            SetupPiece(row, col, imagePath);
         }
 
         private static void SetupPiece(int row, int col, string imagePath)
@@ -130,89 +122,8 @@ namespace Chess_Game.Scripts
                         oldTileSelected = tileSelected;
                         tileSelected = new Point(row, col);
                     }
-                }
-            }
-        }
 
-        public static void MovePiece(object sender, EventArgs e)
-        {
-            if (gamePause) 
-                return;
-
-            if (pieces[oldTileSelected.X, oldTileSelected.Y] == null)
-                return; // Is last select a piece
-
-            if (SelectedYourPiece())
-                return; // You did not select your own piece again
-
-            if (pieces[oldTileSelected.X, oldTileSelected.Y].color != turn)
-                return; // Trying to move enemy piece
-
-            if (!pieces[oldTileSelected.X, oldTileSelected.Y].IsPossibleMove(oldTileSelected, tileSelected))
-                return; // Illegal movement of your piece
-
-            // Need to Check Piece Taken
-            Piece tempPiece = pieces[tileSelected.X, tileSelected.Y];
-            pieces[tileSelected.X, tileSelected.Y] = pieces[oldTileSelected.X, oldTileSelected.Y];
-            pieces[oldTileSelected.X, oldTileSelected.Y] = null;
-
-            if (CheckSideForCheck(GetKingPosition(turn), turn))
-            {
-                pieces[oldTileSelected.X, oldTileSelected.Y] = pieces[tileSelected.X, tileSelected.Y];
-                pieces[tileSelected.X, tileSelected.Y] = tempPiece;
-                CheckSideForCheckmate(GetKingPosition(turn), turn);
-                return;
-            }
-
-            pieces[tileSelected.X, tileSelected.Y].hasMoved = true;
-
-            // Check Promotion
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn && (tileSelected.X == 0 || tileSelected.X == 7))
-                EnablePromotion();
-
-            // Change Sides
-            if (turn == Color.White)
-                turn = Color.Black;
-            else
-                turn = Color.White;
-
-            // Update Board
-            tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
-            tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
-        }
-
-        public static void EnablePromotion()
-        {
-            pawnToPromote = new Point(tileSelected.X, tileSelected.Y);
-            baseForm.EnablePromotionPanel();
-        }
-
-        public static void PawnPromotion(ChessPiece type)
-        {
-            Piece piece = pieces[pawnToPromote.X, pawnToPromote.Y];
-            string stringAddition = type.ToString();
-
-            if (piece.color == Color.White)
-                stringAddition += "W.png";
-            else
-                stringAddition += "B.png";
-
-            piece.imagePath = piece.imagePath.Substring(0, piece.imagePath.Length - 9) + stringAddition;
-
-            piece.type = type;
-            tiles[pawnToPromote.X, pawnToPromote.Y].Image = Image.FromFile(piece.imagePath);
-        }
-
-        public static void HighlightPiece(object sender, EventArgs e)
-        {
-            if (gamePause)
-                return;
-
-            for (int row = 0; row < 8; row++)
-            {
-                for (int col = 0; col < 8; col++)
-                {
-                    if (SelectedYourPiece())
+                    if (SelectedYourPiece()) // Highlight Tiles
                     {
                         if (ReferenceEquals(sender, tiles[row, col]))
                         {
@@ -225,35 +136,113 @@ namespace Chess_Game.Scripts
             }
         }
 
+        public static void MovePiece(object sender, EventArgs e)
+        {
+            if (CancelMovePiece())
+                return;
+
+            if (DoesMoveCauseCheck())
+                return;
+
+            CheckPromotion();
+            ChangeSides();
+
+            // Update Board
+            tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(pieces[tileSelected.X, tileSelected.Y].imagePath);
+            tiles[oldTileSelected.X, oldTileSelected.Y].Image = null;
+        }
+
+        private static bool CancelMovePiece()
+        {
+            if (gamePause)
+                return true;
+
+            if (pieces[oldTileSelected.X, oldTileSelected.Y] == null)
+                return true; // Is last select a piece
+
+            if (SelectedYourPiece())
+                return true; // You did not select your own piece again
+
+            if (pieces[oldTileSelected.X, oldTileSelected.Y].color != turn)
+                return true; // Trying to move enemy piece
+
+            if (!pieces[oldTileSelected.X, oldTileSelected.Y].IsPossibleMove(oldTileSelected, tileSelected))
+                return true; // Illegal movement of your piece
+
+            return false;
+        }
+
+        private static bool DoesMoveCauseCheck()
+        {
+            // Check new Tile if occupied and add piece to kill list if so
+
+            Piece tempPiece = pieces[tileSelected.X, tileSelected.Y];
+            pieces[tileSelected.X, tileSelected.Y] = pieces[oldTileSelected.X, oldTileSelected.Y];
+            pieces[oldTileSelected.X, oldTileSelected.Y] = null;
+
+            if (CheckSideForCheck(GetKingPosition(turn), turn))
+            {
+                pieces[oldTileSelected.X, oldTileSelected.Y] = pieces[tileSelected.X, tileSelected.Y];
+                pieces[tileSelected.X, tileSelected.Y] = tempPiece;
+                CheckSideForCheckmate(GetKingPosition(turn), turn);
+                return true;
+            }
+
+            pieces[tileSelected.X, tileSelected.Y].hasMoved = true;
+
+            return false;
+        }
+
+        private static void ChangeSides()
+        {
+            if (turn == Color.White)
+                turn = Color.Black;
+            else
+                turn = Color.White;
+        }
+
+        private static void CheckPromotion()
+        {
+            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn && (tileSelected.X == 0 || tileSelected.X == 7))
+                baseForm.EnableDisablePromotionPanel(true);
+        }
+
+        public static void PawnPromotion(ChessPiece type)
+        {
+            Piece piece = pieces[tileSelected.X, tileSelected.Y];
+
+            UpdateImagePath(piece, type);
+
+            piece.type = type;
+            tiles[tileSelected.X, tileSelected.Y].Image = Image.FromFile(piece.imagePath);
+        }
+
+        private static void UpdateImagePath(Piece piece, ChessPiece type)
+        {
+            string stringAddition = type.ToString();
+
+            stringAddition += piece.color == Color.White ? "W.png" : "B.png";
+
+            piece.imagePath = piece.imagePath.Substring(0, piece.imagePath.Length - 9) + stringAddition;
+        }
+
         public static void HighlightTile(int row, int col)
         {
-            if (row > 7 || row < 0) return;
+            if (row > 7 || row < 0) return; // Within Bounds
             if (col > 7 || col < 0) return;
             tiles[row, col].BackColor = Color.FromArgb(150, Color.LightGreen);
         }
 
         public static void HighlightKillTile(int row, int col)
         {
-            if (row > 7 || row < 0) return;
+            if (row > 7 || row < 0) return; // Within Bounds
             if (col > 7 || col < 0) return;
             tiles[row, col].BackColor = Color.FromArgb(225, Color.LightPink);
         }
 
         public static void HighlightMoves()
         {
-            Point[] validMoves = new Point[0];
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Pawn)
-                validMoves = Pawn.PawnHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Rook)
-                validMoves = Rook.RookHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Bishop)
-                validMoves = Bishop.BishopHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Knight)
-                validMoves = Knight.KnightHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.Queen)
-                validMoves = Queen.QueenHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
-            if (pieces[tileSelected.X, tileSelected.Y].type == ChessPiece.King)
-                validMoves = King.KingHighlightedMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]).ToArray();
+            Point[] validMoves = GetValidMoves(tileSelected, pieces[tileSelected.X, tileSelected.Y]);
 
             foreach (Point tile in validMoves)
             {
@@ -264,8 +253,34 @@ namespace Chess_Game.Scripts
             }
         }
 
+        private static Point[] GetValidMoves(Point start, Piece piece)
+        {
+            Point[] validMoves = new Point[0];
+            if (piece.type == ChessPiece.Pawn)
+                validMoves = Pawn.PawnHighlightedMoves(start, piece).ToArray();
+
+            if (piece.type == ChessPiece.Rook)
+                validMoves = Rook.RookHighlightedMoves(start, piece).ToArray();
+
+            if (piece.type == ChessPiece.Bishop)
+                validMoves = Bishop.BishopHighlightedMoves(start, piece).ToArray();
+
+            if (piece.type == ChessPiece.Knight)
+                validMoves = Knight.KnightHighlightedMoves(start, piece).ToArray();
+
+            if (piece.type == ChessPiece.Queen)
+                validMoves = Queen.QueenHighlightedMoves(start, piece).ToArray();
+
+            if (piece.type == ChessPiece.King)
+                validMoves = King.KingHighlightedMoves(start, piece).ToArray();
+
+            return validMoves;
+        }
+
         public static void RemoveHighlight(int row, int col)
         {
+            if (row > 7 || row < 0) return; // Within Bounds
+            if (col > 7 || col < 0) return;
             tiles[row, col].BackColor = Color.FromArgb(0, Color.LightGreen);
         }
 
@@ -277,9 +292,11 @@ namespace Chess_Game.Scripts
 
         public static bool IsTileOccupied(int row, int col)
         {
-            if (row > 7 || row < 0) return false;
+            if (row > 7 || row < 0) return false; // Within bounds
             if (col > 7 || col < 0) return false;
-            if (pieces[row, col] != null) return true;
+
+            if (pieces[row, col] != null) return true; // Occupied
+
             return false;
         }
 
@@ -302,9 +319,10 @@ namespace Chess_Game.Scripts
             return false;
         }
 
-        public static bool CheckSideForCheckmate(Point kingPosition, Color side)
+        public static void CheckSideForCheckmate(Point kingPosition, Color side) // Refactor
         {
             bool temp = false;
+
             for (int row = 0; row < 8; row++)
             {
                 for (int col = 0; col < 8; col++)
@@ -314,26 +332,14 @@ namespace Chess_Game.Scripts
                     if (piece == null || piece.color != side)
                         continue;
 
-                    Point[] validMoves = new Point[0];
-
-                    if (piece.type == ChessPiece.Pawn)
-                        validMoves = Pawn.PawnHighlightedMoves(new Point(row, col), piece).ToArray();
-                    if (piece.type == ChessPiece.Rook)
-                        validMoves = Rook.RookHighlightedMoves(new Point(row, col), piece).ToArray();
-                    if (piece.type == ChessPiece.Bishop)
-                        validMoves = Bishop.BishopHighlightedMoves(new Point(row, col), piece).ToArray();
-                    if (piece.type == ChessPiece.Knight)
-                        validMoves = Knight.KnightHighlightedMoves(new Point(row, col), piece).ToArray();
-                    if (piece.type == ChessPiece.Queen)
-                        validMoves = Queen.QueenHighlightedMoves(new Point(row, col), piece).ToArray();
-                    if (piece.type == ChessPiece.King)
-                        validMoves = King.KingHighlightedMoves(new Point(row, col), piece).ToArray();
+                    Point[] validMoves = GetValidMoves(new Point(row, col), piece);
 
                     foreach (Point move in validMoves)
                     {
                         Piece tempPiece = pieces[move.X, move.Y];
-                        pieces[move.X, move.Y] = pieces[row, col];
+                        pieces[move.X, move.Y] = pieces[row, col]; // Move Piece to new tile
                         pieces[row, col] = null;
+
 
                         Point newKingPosition = kingPosition;
 
@@ -346,19 +352,19 @@ namespace Chess_Game.Scripts
                             temp = true;
                         }
 
-                        pieces[row, col] = pieces[move.X, move.Y];
+                        // Revert Piece back
+                        pieces[row, col] = pieces[move.X, move.Y]; 
                         pieces[move.X, move.Y] = tempPiece;
                     }
                 }
             }
             if (temp)
-                return true;
+                return;
 
             baseForm.ShowEndGame();
-            return false;
         }
         
-        private static Point GetKingPosition(Color side)
+        private static Point GetKingPosition(Color side) // Save in Memory
         {
             for (int row = 0; row < 8; row++)
             {
