@@ -22,9 +22,9 @@ namespace Chess_Game.Scripts
         public static bool gamePause = false;
 
         private static Panel ChessBoard;
-        private static PictureBox[,] tiles = new PictureBox[8, 8];
+        private readonly static PictureBox[,] tiles = new PictureBox[8, 8];
         public static Piece[,] pieces { get; private set; }
-        private static string[,] startingPosition = new string[8, 8]
+        private readonly static string[,] startingPosition = new string[8, 8]
         {
             { "RookB", "KnightB", "BishopB", "QueenB", "KingB", "BishopB", "KnightB", "RookB" },
             { "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB", "PawnB" },
@@ -122,17 +122,18 @@ namespace Chess_Game.Scripts
                         oldTileSelected = tileSelected;
                         tileSelected = new Point(row, col);
                     }
-
-                    if (SelectedYourPiece()) // Highlight Tiles
-                    {
-                        if (ReferenceEquals(sender, tiles[row, col]))
-                        {
-                            HighlightTile(row, col);
-                            HighlightMoves();
-                            return;
-                        }
-                    }
                 }
+            }
+
+            ShowPossibleMoves();
+        }
+
+        public static void ShowPossibleMoves()
+        {
+            if (SelectedYourPiece())
+            {
+                HighlightTile(tileSelected.X, tileSelected.Y);
+                HighlightMoves();
             }
         }
 
@@ -256,6 +257,9 @@ namespace Chess_Game.Scripts
         private static Point[] GetValidMoves(Point start, Piece piece)
         {
             Point[] validMoves = new Point[0];
+
+            if (piece == null) return validMoves;
+
             if (piece.type == ChessPiece.Pawn)
                 validMoves = Pawn.PawnHighlightedMoves(start, piece).ToArray();
 

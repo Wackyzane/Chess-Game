@@ -8,13 +8,9 @@ namespace Chess_Game.Scripts
     {
         public static bool PawnPossibleMoves(Point start, Point end)
         {
-            int direction = 0;
             int moveDistance = end.X - start.X;
 
-            if (Board.pieces[start.X, start.Y].color == Color.White)
-                direction = -1;
-            else
-                direction = 1;
+            int direction = Board.pieces[start.X, start.Y].color == Color.White ? -1 : 1;
 
             if (end.Y != start.Y) // Moving Diagonally
             {
@@ -46,11 +42,7 @@ namespace Chess_Game.Scripts
         {
             List<Point> validMoves = new List<Point>();
 
-            int direction = 0;
-            if (piece.color == Color.White)
-                direction--;
-            else
-                direction++;
+            int direction = piece.color == Color.White ? -1 : 1;
 
             // Forward Movement
             if (!Board.IsTileOccupied(start.X + direction, start.Y)) {
